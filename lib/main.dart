@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'blocs/bloc_exports.dart';
-import 'models/taks.dart';
 import 'screens/tasks_screen.dart';
 
-void main() {
-  BlocOverrides.runZoned(() => runApp(const MyApp()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final storage = await HydratedStorage.build(
+      storageDirectory: await getApplicationDocumentsDirectory());
+  HydratedBlocOverrides.runZoned(
+    () => runApp(const MyApp()),
+    storage: storage,
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -15,19 +21,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TaskBloc()
-        ..add(
-          AddTask(
-            task: Task(title: 'Task 1'),
-          ),
-        ),
+      create: (context) => TaskBloc(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Tasks App',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: TasksScreen(),
+        home: const TasksScreen(),
       ),
     );
   }

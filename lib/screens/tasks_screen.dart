@@ -1,37 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tasks_app/screens/add_task_screen.dart';
 
 import '../blocs/bloc/task_bloc.dart';
 import '../models/taks.dart';
 import '../widgets/task_list.dart';
 
-class TasksScreen extends StatelessWidget {
-  TasksScreen({Key? key}) : super(key: key);
-  // List<Task> taskList = [
-  //   Task(title: 'task 1'),
-  //   Task(title: 'task 2'),
-  //   Task(title: 'task 3'),
-  // ];
-  TextEditingController titleController = TextEditingController();
+class TasksScreen extends StatefulWidget {
+  const TasksScreen({Key? key}) : super(key: key);
 
+  @override
+  State<TasksScreen> createState() => _TasksScreenState();
+}
+
+class _TasksScreenState extends State<TasksScreen> {
+  // List<Task> taskList = [
   void _addTask(BuildContext context) {
     showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
+        // clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        elevation: 5,
         context: context,
         builder: (context) => SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: Column(
-                  children: [
-                    const Text('Add task'),
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: titleController,
-                      decoration: const InputDecoration(
-                          label: Text('Title'), border: OutlineInputBorder()),
-                    )
-                  ],
-                ),
+                child: AddTaskScreen(),
               ),
             ));
   }
@@ -42,11 +41,13 @@ class TasksScreen extends StatelessWidget {
       builder: (context, state) {
         List<Task> taskList = state.allTasks;
         return Scaffold(
+          extendBody: true,
+          //resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: const Text('Tasks App'),
             actions: [
               IconButton(
-                onPressed: () {},
+                onPressed: () => _addTask(context),
                 icon: const Icon(Icons.add),
               )
             ],
