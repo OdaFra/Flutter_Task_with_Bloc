@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tasks_app/services/guid_gen.dart';
 
-import '../blocs/bloc/task_bloc.dart';
+import '../blocs/bloc_exports.dart';
 import '../models/taks.dart';
 
 // ignore: must_be_immutable
