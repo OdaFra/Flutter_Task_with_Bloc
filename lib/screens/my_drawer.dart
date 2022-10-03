@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tasks_app/blocs/bloc_exports.dart';
 import 'package:flutter_tasks_app/screens/recycle_bin.dart';
-import 'package:flutter_tasks_app/screens/tasks_screen.dart';
+import 'package:flutter_tasks_app/screens/tabs_screen.dart';
 
-class MyDrawer extends StatefulWidget {
+class MyDrawer extends StatelessWidget {
   const MyDrawer({Key? key}) : super(key: key);
 
-  @override
-  State<MyDrawer> createState() => _MyDrawerState();
-}
-
-bool switchvalue = false;
-
-class _MyDrawerState extends State<MyDrawer> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -31,8 +24,8 @@ class _MyDrawerState extends State<MyDrawer> {
             BlocBuilder<TaskBloc, TaskState>(
               builder: (context, state) {
                 return GestureDetector(
-                  onTap: () => Navigator.of(context)
-                      .pushReplacementNamed(TasksScreen.id),
+                  onTap: () =>
+                      Navigator.of(context).pushReplacementNamed(TabsScreen.id),
                   child: ListTile(
                     leading: const Icon(Icons.folder_special_outlined),
                     title: const Text('My Tasks'),
@@ -55,13 +48,20 @@ class _MyDrawerState extends State<MyDrawer> {
                 );
               },
             ),
-            Switch(
-                value: switchvalue,
-                onChanged: (value) {
-                  setState(() {
-                    switchvalue = value;
-                  });
-                })
+            BlocBuilder<SwitchBloc, SwitchState>(
+              builder: (context, state) {
+                return Switch(
+                  value: state.switchvalue,
+                  onChanged: (newValue) {
+                    newValue
+                        ? context.read<SwitchBloc>().add(SwitchOnEvent())
+                        : context.read<SwitchBloc>().add(SwitchOffEvent());
+
+                    print(newValue);
+                  },
+                );
+              },
+            )
           ],
         ),
       ),

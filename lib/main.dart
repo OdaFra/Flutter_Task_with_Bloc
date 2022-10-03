@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tasks_app/screens/tabs_screen.dart';
 import 'package:flutter_tasks_app/services/app_routers.dart';
+import 'package:flutter_tasks_app/services/app_theme.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'blocs/bloc_exports.dart';
-import 'screens/tasks_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,17 +35,21 @@ class MyApp extends StatelessWidget {
           create: (context) => TaskBloc(),
         ),
         BlocProvider(
-          create: (context) => SwichtBloc(),
+          create: (context) => SwitchBloc(),
         )
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Tasks App',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const TasksScreen(),
-        onGenerateRoute: appRouter.onGenerateRoute,
+      child: BlocBuilder<SwitchBloc, SwitchState>(
+        builder: (context, state) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter Tasks App',
+            theme: state.switchvalue
+                ? AppThemes.appThemeData[AppTheme.darkTheme]
+                : AppThemes.appThemeData[AppTheme.lightTheme],
+            home: const TabsScreen(),
+            onGenerateRoute: appRouter.onGenerateRoute,
+          );
+        },
       ),
     );
   }
