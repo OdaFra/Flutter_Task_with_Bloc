@@ -7,6 +7,7 @@ import '../models/taks.dart';
 // ignore: must_be_immutable
 class AddTaskScreen extends StatelessWidget {
   TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   AddTaskScreen({Key? key}) : super(key: key);
 
@@ -25,6 +26,15 @@ class AddTaskScreen extends StatelessWidget {
                 label: Text('Title'), border: OutlineInputBorder()),
           ),
           const SizedBox(height: 10),
+          TextField(
+            autofocus: true,
+            controller: descriptionController,
+            maxLines: 5,
+            minLines: 2,
+            decoration: const InputDecoration(
+                label: Text('Description'), border: OutlineInputBorder()),
+          ),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -34,7 +44,10 @@ class AddTaskScreen extends StatelessWidget {
               ElevatedButton(
                   onPressed: () {
                     var task = Task(
-                        title: titleController.text, id: GUIDGen.generate());
+                        description: descriptionController.text,
+                        title: titleController.text,
+                        id: GUIDGen.generate(),
+                        date: DateTime.now().toString());
                     context.read<TaskBloc>().add(AddTask(task: task));
                     Navigator.pop(context);
                   },
