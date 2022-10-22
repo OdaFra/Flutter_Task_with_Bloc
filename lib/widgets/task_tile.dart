@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tasks_app/screens/edit_task_screen.dart';
 import 'package:flutter_tasks_app/widgets/poppu_menu.dart';
 import 'package:intl/intl.dart';
 
@@ -20,6 +21,28 @@ class TaskTile extends StatelessWidget {
         : ctx.read<TaskBloc>().add(RemoveTask(task: task));
   }
 
+  void _editTask(BuildContext context) {
+    showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
+        // clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        elevation: 5,
+        context: context,
+        builder: (context) => SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: EditTaskScreen(
+                  oldTask: task,
+                ),
+              ),
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -30,7 +53,9 @@ class TaskTile extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                const Icon(Icons.star_outline),
+                task.isFavorite == false
+                    ? const Icon(Icons.star_outline)
+                    : const Icon(Icons.star),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -65,6 +90,15 @@ class TaskTile extends StatelessWidget {
                 cancelOrDeletingCallback: () =>
                     _removeOrDeleteTask(context, task),
                 task: task,
+                likeorDislikeCallBack: () => context.read<TaskBloc>().add(
+                      MarkFavoriteOrUnFavoriteEvent(task: task),
+                    ),
+                editTaskCallBack: () {
+                  Navigator.of(context).pop();
+                  _editTask(context);
+                },
+                restoreTaskCallBack: () =>
+                    context.read<TaskBloc>().add(RestoreTask(task: task)),
               )
             ],
           ),
